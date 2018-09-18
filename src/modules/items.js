@@ -17,7 +17,7 @@ import {
   values,
   zipObj,
 } from 'ramda';
-import {LOCATION_CHANGE, createMatchSelector} from 'connected-react-router';
+import {LOCATION_CHANGE, createMatchSelector} from 'modules/router';
 import rereducer, {assocReducer, concatReducer, payload} from 'rereducer';
 import {createTypes, raiseAction} from 'action-helpers';
 
