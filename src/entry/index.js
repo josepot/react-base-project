@@ -1,30 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {createBrowserHistory} from 'history';
-import {connectRouter} from 'connected-react-router';
 
-import rootReducer from 'modules/root-reducer';
+import reducer from 'modules/root-reducer';
 import rootSaga from 'modules/root-saga';
+import {history} from 'modules/router';
 import App from 'App';
 
 import configureStore from './store';
 import Providers from './Providers';
 
-const history = createBrowserHistory();
-
 export const render = (AppComponent, store) => {
   ReactDOM.render(
-    <Providers store={store}>
+    <Providers store={store} history={history}>
       <AppComponent />
     </Providers>,
     document.getElementById('root')
   );
 };
 
-const routerEnhancer = connectRouter(history);
-const reducer = routerEnhancer(rootReducer);
-
-export const store = configureStore(reducer, history);
+export const store = configureStore(reducer);
 store.sagaTask = store.runSaga(rootSaga);
 
 render(App, store);
