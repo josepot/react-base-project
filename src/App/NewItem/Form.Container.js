@@ -1,6 +1,6 @@
 import {always} from 'ramda';
 import {compose, withProps} from 'recompose';
-import {connect} from 'react-redux';
+import {connect} from 'react-redux-lean';
 import {withFormik} from 'formik';
 
 import {onSubmit, onItemSubmitted} from 'modules/items';

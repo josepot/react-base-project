@@ -1,6 +1,6 @@
 import {complement} from 'ramda';
 import {compose} from 'recompose';
-import {connect} from 'react-redux';
+import {connect} from 'react-redux-lean';
 import {createStructuredSelector} from 'reselect';
 import {isListLoadingSelector as isLoading} from 'modules/items';
 import {Loader} from 'components';

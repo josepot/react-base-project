@@ -1,4 +1,4 @@
-import {connect} from 'react-redux';
+import {connect} from 'react-redux-lean';
 import {compose} from 'recompose';
 import {createStructuredSelector} from 'reselect';
 
