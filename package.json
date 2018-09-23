@@ -9,7 +9,6 @@
   "dependencies": {
     "emotion": "^9.2.8",
     "emotion-theming": "^9.2.6",
-    "formik": "^1.3.0",
     "history": "^4.7.2",
     "prop-types": "^15.6.2",
     "ramda": "^0.25.0",

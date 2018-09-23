@@ -1,14 +1,17 @@
-import {always} from 'ramda';
+import {always, both, complement, lt} from 'ramda';
 import {compose, withProps} from 'recompose';
 import {connect} from 'react-redux-lean';
-import {withFormik} from 'formik';
 
 import {onSubmit, onItemSubmitted} from 'modules/items';
 import {createValidations} from 'utils';
+import {withForm} from 'hocs';
 import FormComponent from './Form.Component';
 
 const isNotEmpty = x => !!x;
-const isValidPrice = x => typeof x === 'number' && x > 0;
+const isValidPrice = compose(
+  both(complement(Number.isNaN), lt(0)),
+  parseFloat
+);
 
 export default compose(
   withProps({onItemSubmitted}),
@@ -16,7 +19,7 @@ export default compose(
     null,
     {onSubmit}
   ),
-  withFormik({
+  withForm({
     mapPropsToValues: always({
       title: '',
       author: '',
