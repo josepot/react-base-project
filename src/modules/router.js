@@ -4,7 +4,7 @@ import {createSelector} from 'reselect';
 import rereducer, {getPayload} from 'rereducer';
 import {createBrowserHistory} from 'history';
 import {eventChannel} from 'redux-saga';
-import {call, put, takeEvery} from 'redux-saga/effects';
+import {all, call, cancelled, put, take, takeEvery} from 'redux-saga/effects';
 import {createTypes} from 'action-helpers';
 
 export const history = createBrowserHistory();
@@ -48,21 +48,36 @@ export const createMatchSelector = path =>
   createSelector(getPathname, partialRight(matchPath, [path]));
 
 // SAGAS
-const historyChannel = eventChannel(emit =>
-  history.listen(
-    compose(
-      emit,
-      onLocationChange
+function* historyListener() {
+  const historyChannel = eventChannel(emit =>
+    history.listen(
+      compose(
+        emit,
+        onLocationChange
+      )
     )
-  )
-);
+  );
+
+  try {
+    while (true) {
+      const action = yield take(historyChannel);
+      yield put(action);
+    }
+  } finally {
+    if (yield cancelled()) {
+      historyChannel.close();
+    }
+  }
+}
 
 function* historyCallsWatcher({payload: {method, args}}) {
   yield call([history, history[method]], args);
 }
 
 export function* saga() {
-  yield takeEvery(historyChannel, put);
-  yield takeEvery(HISTORY_METHOD_CALL, historyCallsWatcher);
-  yield put(onLocationChange(history.location));
+  yield all([
+    call(historyListener),
+    takeEvery(HISTORY_METHOD_CALL, historyCallsWatcher),
+    yield put(onLocationChange(history.location)),
+  ]);
 }
