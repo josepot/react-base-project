@@ -15,6 +15,11 @@ export const {LOCATION_CHANGE, HISTORY_METHOD_CALL} = createTypes('ROUTER', [
   'HISTORY_METHOD_CALL',
 ]);
 
+const onLocationChange = (location, action) => ({
+  type: LOCATION_CHANGE,
+  payload: {location, action},
+});
+
 function updateLocation(method) {
   return (...args) => ({
     type: HISTORY_METHOD_CALL,
@@ -27,11 +32,6 @@ export const replace = updateLocation('replace');
 export const go = updateLocation('go');
 export const goBack = updateLocation('goBack');
 export const goForward = updateLocation('goForward');
-
-const onLocationChange = (location, action) => ({
-  type: LOCATION_CHANGE,
-  payload: {location, action},
-});
 
 // REDUCER
 export default rereducer({location: {}, action: null}, [

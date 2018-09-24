@@ -1,7 +1,7 @@
-import {all, fork} from 'redux-saga/effects';
+import {all, call} from 'redux-saga/effects';
 import {saga as items} from './items';
 import {saga as router} from './router';
 
 export default function*() {
-  yield all([router, items].map(fork));
+  yield all([items, router].map(call));
 }

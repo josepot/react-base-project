@@ -161,7 +161,6 @@ function* itemsSaga() {
 
 function* locationChangeWatcher() {
   const id = yield select(selectedIdSelector);
-  if (id === null) return;
   const item = yield select(itemSelector, {id});
   if (
     !item ||
