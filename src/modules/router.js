@@ -1,10 +1,10 @@
-import {compose, prop} from 'ramda';
+import {compose, partialRight, prop} from 'ramda';
 import {matchPath} from 'react-router';
 import {createSelector} from 'reselect';
 import rereducer, {getPayload} from 'rereducer';
 import {createBrowserHistory} from 'history';
 import {eventChannel} from 'redux-saga';
-import {call, put, take, takeEvery} from 'redux-saga/effects';
+import {call, fork, put, take, takeEvery} from 'redux-saga/effects';
 import {createTypes} from 'action-helpers';
 
 export const history = createBrowserHistory();
@@ -34,7 +34,7 @@ const onLocationChange = (location, action) => ({
 });
 
 // REDUCER
-export default rereducer({location: null, action: null}, [
+export default rereducer({location: {}, action: null}, [
   LOCATION_CHANGE,
   getPayload,
 ]);
@@ -43,22 +43,9 @@ export default rereducer({location: null, action: null}, [
 const getRouter = prop('router');
 export const getLocation = createSelector(getRouter, prop('location'));
 export const getAction = createSelector(getRouter, prop('action'));
-export const createMatchSelector = path => {
-  let lastPathname = null;
-  let lastMatch = null;
-  return state => {
-    const {pathname} = getLocation(state) || {};
-    if (pathname === lastPathname) {
-      return lastMatch;
-    }
-    lastPathname = pathname;
-    const match = matchPath(pathname, path);
-    if (!match || !lastMatch || match.url !== lastMatch.url) {
-      lastMatch = match;
-    }
-    return lastMatch;
-  };
-};
+export const getPathname = createSelector(getLocation, prop('pathname'));
+export const createMatchSelector = path =>
+  createSelector(getPathname, partialRight(matchPath, [path]));
 
 // SAGAS
 function* locationChangeWatcher() {
@@ -82,7 +69,7 @@ function* historyCallsWatcher({payload: {method, args}}) {
 }
 
 export function* saga() {
-  yield call(locationChangeWatcher);
+  yield fork(locationChangeWatcher);
   yield takeEvery(HISTORY_METHOD_CALL, historyCallsWatcher);
   yield put(onLocationChange(history.location));
 }
