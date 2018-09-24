@@ -8,8 +8,6 @@ const resetState = (props, mapPropsToValues) => ({
   isSubmitting: false,
 });
 
-const emptyObject = {};
-
 export default ({mapPropsToValues, validate, handleSubmit}) => BaseComponent =>
   class WithForm extends Component {
     constructor(props) {
