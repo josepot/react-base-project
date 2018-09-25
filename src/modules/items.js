@@ -115,7 +115,7 @@ export const loadingItemsSelector = createSelector(
 const idMatchSelector = createMatchSelector('/list/:id');
 export const selectedIdSelector = createSelector(
   idMatchSelector,
-  match => (match && parseInt(match.params.id, 10)) || null
+  match => match && parseInt(match.params.id, 10)
 );
 
 const propIdSelector = (state, {id}) => id;
@@ -132,7 +132,7 @@ const isItemSelectedSelector = createCachedSelector(
 
 const rawItemSelector = createCachedSelector(
   [propIdSelector, itemsDictSelector],
-  prop
+  propOr({})
 )(propIdSelector);
 
 export const itemSelector = createCachedSelector(
@@ -161,11 +161,10 @@ function* itemsSaga() {
 
 function* locationChangeWatcher() {
   const id = yield select(selectedIdSelector);
-  const item = yield select(itemSelector, {id});
-  if (
-    !item ||
-    (item.author === undefined && item.price === undefined && !item.isLoading)
-  ) {
+  if (id === null) return;
+
+  const {author, price, isLoading} = yield select(itemSelector, {id});
+  if (author === undefined && price === undefined && !isLoading) {
     yield put(requestItem(id));
   }
 }
