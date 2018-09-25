@@ -151,12 +151,9 @@ function* itemSaga({payload: id}) {
 }
 
 function* itemsSaga() {
-  while (true) {
-    yield take(ACTIONS.ITEMS_REQUESTED);
-    const {length} = yield select(idsListSelector);
-    const result = yield call(getItems, length, PAGE_SIZE);
-    yield put(itemsReceived(result));
-  }
+  const {length} = yield select(idsListSelector);
+  const result = yield call(getItems, length, PAGE_SIZE);
+  yield put(itemsReceived(result));
 }
 
 function* locationChangeWatcher() {
@@ -180,10 +177,19 @@ function* addItemSaga({payload: {title, author, price}}) {
   yield put(itemReceived(item));
 }
 
+function* start() {
+  yield all([
+    takeEvery(ACTIONS.ITEMS_REQUESTED, itemsSaga),
+    takeEvery(ACTIONS.ITEM_REQUESTED, itemSaga),
+    takeEvery(LOCATION_CHANGE, locationChangeWatcher),
+    takeEvery(ACTIONS.ADD_ITEM_REQUESTED, addItemSaga),
+    put(requestItems()),
+  ]);
+}
+
 export function* saga() {
-  yield fork(itemsSaga);
-  yield takeEvery(ACTIONS.ITEM_REQUESTED, itemSaga);
-  yield takeEvery(LOCATION_CHANGE, locationChangeWatcher);
-  yield takeEvery(ACTIONS.ADD_ITEM_REQUESTED, addItemSaga);
-  yield put(requestItems());
+  while (true) {
+    yield takeLocation('/list');
+    yield race([start, takeLocation('/list', false)])
+  }
 }
