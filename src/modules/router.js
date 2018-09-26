@@ -97,7 +97,7 @@ export const takeLocation = (path, shouldMatch = true) => {
     do {
       yield take(LOCATION_CHANGE);
       result = yield select(selector);
-    } while (!!result === shouldMatch);
+    } while (!result === shouldMatch);
     return result;
   });
 };

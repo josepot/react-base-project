@@ -1,4 +1,13 @@
-import {call, fork, put, select, takeEvery, take} from 'redux-saga/effects';
+import {
+  all,
+  call,
+  fork,
+  put,
+  race,
+  select,
+  takeEvery,
+  takeLatest,
+} from 'redux-saga/effects';
 import {items as itemsApi} from 'api';
 import {combineReducers} from 'redux';
 import {createSelector} from 'reselect';
@@ -17,7 +26,7 @@ import {
   values,
   zipObj,
 } from 'ramda';
-import {LOCATION_CHANGE, createMatchSelector} from 'modules/router';
+import {createMatchSelector, takeLocation} from 'modules/router';
 import rereducer, {assocReducer, concatReducer, payload} from 'rereducer';
 import {createTypes, raiseAction} from 'action-helpers';
 
@@ -156,10 +165,8 @@ function* itemsSaga() {
   yield put(itemsReceived(result));
 }
 
-function* locationChangeWatcher() {
-  const id = yield select(selectedIdSelector);
-  if (id === null) return;
-
+function* itemEntered(id) {
+  console.log('itemEntered', id);
   const {author, price, isLoading} = yield select(itemSelector, {id});
   if (author === undefined && price === undefined && !isLoading) {
     yield put(requestItem(id));
@@ -177,19 +184,32 @@ function* addItemSaga({payload: {title, author, price}}) {
   yield put(itemReceived(item));
 }
 
+function* requestItemsIfEmpty() {
+  const ids = yield select(idsListSelector);
+  if (ids.length > 0) return;
+  yield put(requestItems());
+}
+
 function* start() {
   yield all([
-    takeEvery(ACTIONS.ITEMS_REQUESTED, itemsSaga),
+    takeLatest(ACTIONS.ITEMS_REQUESTED, itemsSaga),
     takeEvery(ACTIONS.ITEM_REQUESTED, itemSaga),
-    takeEvery(LOCATION_CHANGE, locationChangeWatcher),
+    call(function* itemEnteredWatcher() {
+      while (true) {
+        const {
+          params: {id},
+        } = yield takeLocation('/list/:id');
+        yield fork(itemEntered, parseInt(id));
+      }
+    }),
     takeEvery(ACTIONS.ADD_ITEM_REQUESTED, addItemSaga),
-    put(requestItems()),
+    call(requestItemsIfEmpty),
   ]);
 }
 
 export function* saga() {
   while (true) {
     yield takeLocation('/list');
-    yield race([start, takeLocation('/list', false)])
+    yield race([call(start), takeLocation('/list', false)]);
   }
 }
