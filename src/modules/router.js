@@ -4,7 +4,15 @@ import {createSelector} from 'reselect';
 import rereducer, {getPayload} from 'rereducer';
 import {createBrowserHistory} from 'history';
 import {eventChannel} from 'redux-saga';
-import {call, cancelled, fork, put, take, takeEvery} from 'redux-saga/effects';
+import {
+  call,
+  cancelled,
+  fork,
+  select,
+  put,
+  take,
+  takeEvery,
+} from 'redux-saga/effects';
 import {createTypes} from 'action-helpers';
 
 export const history = createBrowserHistory();
@@ -81,3 +89,15 @@ export function* saga() {
   yield takeEvery(HISTORY_METHOD_CALL, callHistoryMethod);
   yield put(onLocationChange(history.location));
 }
+
+export const takeLocation = (path, shouldMatch = true) => {
+  const selector = createMatchSelector(path);
+  return call(function* takeLocationSaga() {
+    let result;
+    do {
+      yield take(LOCATION_CHANGE);
+      result = yield select(selector);
+    } while (!result === shouldMatch);
+    return result;
+  });
+};

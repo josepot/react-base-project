@@ -1,4 +1,11 @@
-import {call, fork, put, select, takeEvery, take} from 'redux-saga/effects';
+import {
+  call,
+  fork,
+  put,
+  select,
+  takeEvery,
+  takeLatest,
+} from 'redux-saga/effects';
 import {items as itemsApi} from 'api';
 import {combineReducers} from 'redux';
 import {createSelector} from 'reselect';
@@ -17,7 +24,7 @@ import {
   values,
   zipObj,
 } from 'ramda';
-import {LOCATION_CHANGE, createMatchSelector} from 'modules/router';
+import {createMatchSelector, takeLocation} from 'modules/router';
 import rereducer, {assocReducer, concatReducer, payload} from 'rereducer';
 import {createTypes, raiseAction} from 'action-helpers';
 
@@ -145,28 +152,31 @@ export const itemSelector = createCachedSelector(
 )(propIdSelector);
 
 // SAGAS
+function* itemEntered(id) {
+  const {author, price, isLoading} = yield select(itemSelector, {id});
+  if (author === undefined && price === undefined && !isLoading) {
+    yield put(requestItem(id));
+  }
+}
+
+function* itemEnteredWatcher() {
+  while (true) {
+    const {
+      params: {id},
+    } = yield takeLocation('/list/:id');
+    yield fork(itemEntered, parseInt(id, 10));
+  }
+}
+
 function* itemSaga({payload: id}) {
   const item = yield call(getItem, id);
   yield put(itemReceived(item));
 }
 
 function* itemsSaga() {
-  while (true) {
-    yield take(ACTIONS.ITEMS_REQUESTED);
-    const {length} = yield select(idsListSelector);
-    const result = yield call(getItems, length, PAGE_SIZE);
-    yield put(itemsReceived(result));
-  }
-}
-
-function* locationChangeWatcher() {
-  const id = yield select(selectedIdSelector);
-  if (id === null) return;
-
-  const {author, price, isLoading} = yield select(itemSelector, {id});
-  if (author === undefined && price === undefined && !isLoading) {
-    yield put(requestItem(id));
-  }
+  const {length} = yield select(idsListSelector);
+  const result = yield call(getItems, length, PAGE_SIZE);
+  yield put(itemsReceived(result));
 }
 
 let onSubmitCb = Function.prototype;
@@ -180,10 +190,16 @@ function* addItemSaga({payload: {title, author, price}}) {
   yield put(itemReceived(item));
 }
 
-export function* saga() {
-  yield fork(itemsSaga);
-  yield takeEvery(ACTIONS.ITEM_REQUESTED, itemSaga);
-  yield takeEvery(LOCATION_CHANGE, locationChangeWatcher);
-  yield takeEvery(ACTIONS.ADD_ITEM_REQUESTED, addItemSaga);
+function* requestItemsIfEmpty() {
+  const ids = yield select(idsListSelector);
+  if (ids.length > 0) return;
   yield put(requestItems());
+}
+
+export function* saga() {
+  yield takeLatest(ACTIONS.ITEMS_REQUESTED, itemsSaga);
+  yield takeEvery(ACTIONS.ITEM_REQUESTED, itemSaga);
+  yield takeEvery(ACTIONS.ADD_ITEM_REQUESTED, addItemSaga);
+  yield fork(itemEnteredWatcher);
+  yield fork(requestItemsIfEmpty);
 }
