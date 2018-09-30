@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Base project",
   "main": "index.js",
+  "repository": "https://github.com/josepot/react-base-project",
   "author": "Josep M Sobrepere <josepot@gmail.com>",
   "license": "MIT",
-  "private": true,
   "dependencies": {
     "emotion": "^9.2.8",
     "emotion-theming": "^9.2.6",
