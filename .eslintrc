@@ -12,7 +12,8 @@
     "import",
     "react",
     "jest",
-    "prettier"
+    "prettier",
+    "react-hooks"
   ],
   "env": {
     "es6": true,
@@ -37,6 +38,7 @@
     "no-underscore-dangle": 0,
     "react/jsx-filename-extension": 0,
     "react/forbid-prop-types": 0,
-    "react/require-default-props": 0
+    "react/require-default-props": 0,
+    "react-hooks/rules-of-hooks": "error"
   }
 }

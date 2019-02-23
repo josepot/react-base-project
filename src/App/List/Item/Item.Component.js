@@ -11,8 +11,9 @@ const Item = ({id, title, author, price, isLoading, isSelected}) => (
     <Header isSelected={isSelected}>
       <NavLink to={`/list/${isSelected ? '' : id}`}>{title}</NavLink>
     </Header>
-    <Loader hidden={!isLoading} color="grey" size={20} />
-    {isSelected && !isLoading ? (
+    {isLoading ? (
+      <Loader color="grey" size={20} />
+    ) : isSelected ? (
       <div>
         <b>Author:</b> {author}
         <br />

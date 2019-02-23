@@ -1,14 +1,13 @@
-import {connect} from 'react-redux-lean';
-import {compose} from 'recompose';
+import {withRedux} from 'hocs';
+import {useOnScrollBottom} from 'hooks';
+import {idsListSelector, requestItems} from 'modules/items';
+import ListComponent from './List.Component';
 
-import {withOnScrollBottom} from 'hocs';
-import {idsListSelector as itemIds, requestItems} from 'modules/items';
-import Component from './List.Component';
-
-export default compose(
-  connect(
-    {itemIds},
-    {onScrollBottom: requestItems}
-  ),
-  withOnScrollBottom
-)(Component);
+export default withRedux(
+  {itemIds: idsListSelector},
+  {requestItems},
+  (state, actions) => ({
+    ...state,
+    onScroll: useOnScrollBottom(actions.requestItems),
+  })
+)(ListComponent);

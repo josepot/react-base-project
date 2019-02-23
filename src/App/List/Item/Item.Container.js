@@ -1,8 +1,5 @@
-import {connect} from 'react-redux-lean';
+import {withRedux} from 'hocs';
 import {itemSelector} from 'modules/items';
 import Item from './Item.Component';
 
-export default connect(
-  itemSelector,
-  {}
-)(Item);
+export default withRedux(itemSelector)(Item);

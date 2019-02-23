@@ -1,5 +1,5 @@
 import {always, assoc, assocPath, map} from 'ramda';
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 
 const resetState = (props, mapPropsToValues) => ({
   values: mapPropsToValues(props),
@@ -8,61 +8,55 @@ const resetState = (props, mapPropsToValues) => ({
   isSubmitting: false,
 });
 
-export default ({mapPropsToValues, validate, handleSubmit}) => BaseComponent =>
-  class WithForm extends Component {
-    constructor(props) {
-      super(props);
-      this.state = resetState(props, mapPropsToValues);
-    }
+export default ({
+  mapPropsToValues,
+  validate,
+  handleSubmit,
+}) => BaseComponent => props => {
+  const [state, setState] = useState(resetState(props, mapPropsToValues));
 
-    onBlur = e => {
-      const {name} = e.target;
-      const {touched} = this.state;
-      if (touched[name]) return;
-      this.setState(assocPath(['touched', name], true));
-    };
-
-    onChange = e => {
-      const {name, value} = e.target;
-      this.setState(({values}) => {
-        const nextValues = assoc(name, value, values);
-        const nextErrors = validate(nextValues);
-        return {
-          values: nextValues,
-          errors: nextErrors,
-        };
-      });
-    };
-
-    reset = () => {
-      this.setState(resetState(this.props, mapPropsToValues));
-    };
-
-    onSubmit = e => {
-      e.preventDefault();
-
-      const {values} = this.state;
-      const errors = validate(values);
-      const touched = map(always(true), values);
-      const hasErrors = Object.keys(errors).length > 0;
-
-      this.setState({errors, touched, isSubmitting: !hasErrors});
-      if (hasErrors) return;
-      handleSubmit(values, {
-        props: this.props,
-        resetForm: this.reset,
-      });
-    };
-
-    render() {
-      return (
-        <form onSubmit={this.onSubmit}>
-          <BaseComponent
-            {...this.state}
-            onChange={this.onChange}
-            onBlur={this.onBlur}
-          />
-        </form>
-      );
-    }
+  const onBlur = e => {
+    const {name} = e.target;
+    const {touched} = state;
+    if (touched[name]) return;
+    setState(assocPath(['touched', name], true));
   };
+
+  const onChange = e => {
+    const {name, value} = e.target;
+    setState(({values, ...rest}) => {
+      const nextValues = assoc(name, value, values);
+      const nextErrors = validate(nextValues);
+      return {
+        ...rest,
+        values: nextValues,
+        errors: nextErrors,
+      };
+    });
+  };
+
+  const reset = () => {
+    setState(resetState(props, mapPropsToValues));
+  };
+
+  const onSubmit = e => {
+    e.preventDefault();
+
+    const {values} = state;
+    const errors = validate(values);
+    const touched = map(always(true), values);
+    const hasErrors = Object.keys(errors).length > 0;
+
+    setState(prev => ({...prev, errors, touched, isSubmitting: !hasErrors}));
+    if (hasErrors) return;
+    handleSubmit(values, {
+      props,
+      resetForm: reset,
+    });
+  };
+  return (
+    <form onSubmit={onSubmit}>
+      <BaseComponent {...state} onChange={onChange} onBlur={onBlur} />
+    </form>
+  );
+};

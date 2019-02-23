@@ -1,24 +1,18 @@
-import {always, both, complement, lt} from 'ramda';
-import {compose, withProps} from 'recompose';
-import {connect} from 'react-redux-lean';
+import {always, both, complement, compose, lt} from 'ramda';
+import {withForm, withRedux} from 'hocs';
 
 import {onSubmit, onItemSubmitted} from 'modules/items';
 import {createValidations} from 'utils';
-import {withForm} from 'hocs';
 import FormComponent from './Form.Component';
 
-const isNotEmpty = x => !!x;
+const isNotEmpty = Boolean;
 const isValidPrice = compose(
   both(complement(Number.isNaN), lt(0)),
   parseFloat
 );
 
 export default compose(
-  withProps({onItemSubmitted}),
-  connect(
-    null,
-    {onSubmit}
-  ),
+  withRedux(null, {onSubmit}),
   withForm({
     mapPropsToValues: always({
       title: '',
@@ -32,9 +26,7 @@ export default compose(
     }),
     handleSubmit(values, {props, resetForm}) {
       props.onSubmit(values);
-      props.onItemSubmitted(() => {
-        resetForm();
-      });
+      onItemSubmitted(resetForm);
     },
   })
 )(FormComponent);
