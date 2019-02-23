@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import {Loader, FormField, Button} from 'components';
 
@@ -11,5 +12,9 @@ const AddItemForm = ({isSubmitting, ...rest}) => (
     </Button>
   </>
 );
+
+AddItemForm.propTypes = {
+  isSubmitting: PropTypes.bool.isRequired,
+};
 
 export default AddItemForm;

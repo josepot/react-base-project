@@ -1,3 +1,6 @@
-import {branch, renderNothing} from 'recompose';
+import React from 'react';
 
-export default conditionFn => branch(conditionFn, renderNothing);
+export default conditionFn => Component =>
+  function renderNothngWhen(props) {
+    return conditionFn(props) ? null : <Component {...props} />;
+  };

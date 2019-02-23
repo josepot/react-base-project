@@ -49,11 +49,23 @@ export default rereducer({location: {}, action: null}, [
 
 // SELECTORS
 const getRouter = prop('router');
-export const getLocation = createSelector(getRouter, prop('location'));
-export const getAction = createSelector(getRouter, prop('action'));
-export const getPathname = createSelector(getLocation, prop('pathname'));
+export const getLocation = createSelector(
+  getRouter,
+  prop('location')
+);
+export const getAction = createSelector(
+  getRouter,
+  prop('action')
+);
+export const getPathname = createSelector(
+  getLocation,
+  prop('pathname')
+);
 export const createMatchSelector = path =>
-  createSelector(getPathname, partialRight(matchPath, [path]));
+  createSelector(
+    getPathname,
+    partialRight(matchPath, [path])
+  );
 
 // SAGAS
 const createHistoryChannel = () =>

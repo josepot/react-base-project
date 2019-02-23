@@ -33,10 +33,8 @@ export default (fromStateProps_, fromActionProps, mapper) => {
   const fromStateProps = !fromStateProps_
     ? () => emptyObj
     : isObject
-      ? function() {
-          return mapObj(fromStateProps_, fn => fn(...arguments));
-        }
-      : fromStateProps_;
+    ? (...args) => mapObj(fromStateProps_, fn => fn(...args))
+    : fromStateProps_;
 
   return BaseComponent => {
     let prevState;
@@ -64,8 +62,8 @@ export default (fromStateProps_, fromActionProps, mapper) => {
         props === prevProps && stateProps === prevStateProps
           ? newProps
           : mapper
-            ? mapper(stateProps, actionProps, props)
-            : {...props, ...stateProps, ...actionProps};
+          ? mapper(stateProps, actionProps, props)
+          : {...props, ...stateProps, ...actionProps};
 
       const result =
         !prevProps || !shallowCompare(newProps, prevProps) ? (
