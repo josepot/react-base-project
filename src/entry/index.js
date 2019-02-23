@@ -23,6 +23,7 @@ store.sagaTask = store.runSaga(rootSaga);
 
 render(App, store);
 
+/*
 if (process.env.NODE_ENV !== 'production' && module.hot) {
   module.hot.accept(
     ['../App', '../modules/root-reducer', '../modules/root-saga'],
@@ -36,3 +37,4 @@ if (process.env.NODE_ENV !== 'production' && module.hot) {
     }
   );
 }
+*/
