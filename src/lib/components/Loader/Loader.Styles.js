@@ -1,5 +1,6 @@
 import {memoizeWith, identity} from 'ramda';
-import styled, {keyframes} from 'react-emotion';
+import styled from '@emotion/styled';
+import {keyframes} from '@emotion/core';
 
 const scale = keyframes`
   30% {

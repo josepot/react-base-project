@@ -13,7 +13,8 @@
     "react",
     "jest",
     "prettier",
-    "react-hooks"
+    "react-hooks",
+    "emotion"
   ],
   "env": {
     "es6": true,
@@ -40,6 +41,10 @@
     "react/forbid-prop-types": 0,
     "react/require-default-props": 0,
     "react-hooks/rules-of-hooks": 2,
-    "react-hooks/exhaustive-deps": 2
+    "react-hooks/exhaustive-deps": 2,
+    "emotion/jsx-import": "error",
+    "emotion/no-vanilla": "error",
+    "emotion/import-from-emotion": "error",
+    "emotion/styled-import": "error"
   }
 }

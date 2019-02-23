@@ -1,4 +1,4 @@
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 
 export default styled('button')`
   background-color: ${({disabled}) => (disabled ? 'grey' : '#0078e7')};

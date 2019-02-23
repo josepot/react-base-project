@@ -1,4 +1,4 @@
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 
 export default styled('input')`
   padding: 0.5em 0.6em;

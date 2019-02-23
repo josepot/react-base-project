@@ -1,6 +1,6 @@
 import React from 'react';
 import {NavLink as UnstyledNavLink} from 'react-router-dom';
-import {Header, Nav, Link, activeLink} from './Navigation.Styles';
+import {Header, Nav, Link, activeStyle} from './Navigation.Styles';
 
 const NavLink = Link.withComponent(UnstyledNavLink);
 
@@ -8,10 +8,10 @@ export default function Navigation() {
   return (
     <Header>
       <Nav>
-        <NavLink activeClassName={activeLink} to="/list">
+        <NavLink activeStyle={activeStyle} to="/list">
           List
         </NavLink>
-        <NavLink activeClassName={activeLink} to="/new">
+        <NavLink activeStyle={activeStyle} to="/new">
           New
         </NavLink>
       </Nav>

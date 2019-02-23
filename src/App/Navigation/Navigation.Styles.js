@@ -1,4 +1,4 @@
-import styled, {css} from 'react-emotion';
+import styled from '@emotion/styled';
 
 export const Header = styled('header')`
   height: 5vh;
@@ -23,6 +23,4 @@ export const Link = styled('a')`
   font-size: 1.25em;
 `;
 
-export const activeLink = css`
-  font-weight: bold;
-`;
+export const activeStyle = {fontWeight: 'bold'};
