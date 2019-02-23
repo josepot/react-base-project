@@ -23,18 +23,14 @@ store.sagaTask = store.runSaga(rootSaga);
 
 render(App, store);
 
-/*
 if (process.env.NODE_ENV !== 'production' && module.hot) {
   module.hot.accept(
     ['../App', '../modules/root-reducer', '../modules/root-saga'],
     () => {
-      store.replaceReducer(reducer);
       store.sagaTask.cancel();
-      store.sagaTask.done.then(() => {
-        store.sagaTask = store.runSaga(rootSaga);
-        render(App, store);
-      });
+      store.replaceReducer(reducer);
+      store.sagaTask = store.runSaga(rootSaga);
+      render(App, store);
     }
   );
 }
-*/
