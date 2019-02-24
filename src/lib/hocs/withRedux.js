@@ -37,12 +37,12 @@ export default (fromStateProps_, fromActionProps, mapper) => {
     : fromStateProps_;
 
   return BaseComponent => {
+    let actionProps;
     let prevState;
     let prevStateProps;
     let prevProps;
+    let prevFinalProps;
     let prevResult;
-    let newProps;
-    let actionProps;
 
     return props => {
       const {state, dispatch} = useContext(context);
@@ -58,16 +58,16 @@ export default (fromStateProps_, fromActionProps, mapper) => {
           dispatch(fn(...args))
         );
 
-      newProps =
+      const finalProps =
         props === prevProps && stateProps === prevStateProps
-          ? newProps
+          ? prevFinalProps
           : mapper
           ? mapper(stateProps, actionProps, props)
           : {...props, ...stateProps, ...actionProps};
 
       const result =
-        !prevProps || !shallowCompare(newProps, prevProps) ? (
-          <BaseComponent {...newProps} />
+        !prevProps || !shallowCompare(finalProps, prevFinalProps) ? (
+          <BaseComponent {...finalProps} />
         ) : (
           prevResult
         );
@@ -75,6 +75,7 @@ export default (fromStateProps_, fromActionProps, mapper) => {
       prevState = state;
       prevStateProps = stateProps;
       prevProps = props;
+      prevFinalProps = finalProps;
       prevResult = result;
 
       return result;
