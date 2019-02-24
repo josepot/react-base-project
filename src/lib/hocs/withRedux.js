@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {memo, useContext} from 'react';
 import {context} from 'ReduxProvider';
 
 const emptyObj = {};
@@ -37,10 +37,10 @@ export default (fromStateProps_, fromActionProps, mapper) => {
     : fromStateProps_;
 
   return BaseComponent => {
+    const ImpBaseComponent = memo(BaseComponent);
     let actionProps;
     let prevState;
     let prevStateProps;
-    let prevProps;
     let prevFinalProps;
     let prevResult;
 
@@ -59,22 +59,21 @@ export default (fromStateProps_, fromActionProps, mapper) => {
         );
 
       const finalProps =
-        props === prevProps && stateProps === prevStateProps
+        prevFinalProps && shallowCompare(stateProps, prevStateProps)
           ? prevFinalProps
           : mapper
           ? mapper(stateProps, actionProps, props)
           : {...props, ...stateProps, ...actionProps};
 
       const result =
-        !prevProps || !shallowCompare(finalProps, prevFinalProps) ? (
-          <BaseComponent {...finalProps} />
-        ) : (
+        prevFinalProps === finalProps ? (
           prevResult
+        ) : (
+          <ImpBaseComponent {...finalProps} />
         );
 
       prevState = state;
       prevStateProps = stateProps;
-      prevProps = props;
       prevFinalProps = finalProps;
       prevResult = result;
 
