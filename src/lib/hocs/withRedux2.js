@@ -33,8 +33,8 @@ export default (fromStateProps_, fromActionProps, mapper) => {
   const fromStateProps = !fromStateProps_
     ? () => emptyObj
     : isObject
-    ? (...args) => mapObj(fromStateProps_, fn => fn(...args))
-    : fromStateProps_;
+      ? (...args) => mapObj(fromStateProps_, fn => fn(...args))
+      : fromStateProps_;
 
   return BaseComponent => {
     const ImpBaseComponent = memo(BaseComponent);
