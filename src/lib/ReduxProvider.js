@@ -1,34 +1,25 @@
 import PropTypes from 'prop-types';
-import React, {Component, createContext} from 'react';
+import React, {createContext, useState, useEffect} from 'react';
 
 export const context = createContext({});
 
 const {Provider} = context;
 
-export default class ReduxProvider extends Component {
-  constructor(props) {
-    super(props);
-    const {store, isSSR} = props;
+const ReduxProvider = ({store, children, isSSR}) => {
+  const {dispatch} = store;
+  const [state, setState] = useState(store.getState());
+  useEffect(
+    () =>
+      isSSR
+        ? undefined
+        : store.subscribe(() => {
+            setState(store.getState());
+          }),
+    [isSSR, store]
+  );
 
-    if (!isSSR) {
-      this.subscription = store.subscribe(this.forceUpdate.bind(this));
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.subscription) this.subscription();
-  }
-
-  render() {
-    const {children, store} = this.props;
-
-    return (
-      <Provider value={{state: store.getState(), dispatch: store.dispatch}}>
-        {children}
-      </Provider>
-    );
-  }
-}
+  return <Provider value={{state, dispatch}}>{children}</Provider>;
+};
 
 ReduxProvider.propTypes = {
   children: PropTypes.element.isRequired,
@@ -43,3 +34,5 @@ ReduxProvider.propTypes = {
 ReduxProvider.defaultProps = {
   isSSR: false,
 };
+
+export default ReduxProvider;
