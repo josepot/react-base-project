@@ -1,4 +1,4 @@
-import React, {memo, useContext} from 'react';
+import React, {useContext, useMemo} from 'react';
 import {context} from 'ReduxProvider';
 
 const emptyObj = {};
@@ -22,6 +22,16 @@ const shallowCompare = (a, b) => {
   return true;
 };
 
+const memoizeObjectFn = fn => {
+  let prevResult;
+  return (...args) => {
+    const res = fn(...args);
+    if (prevResult && shallowCompare(prevResult, res)) return prevResult;
+    prevResult = res;
+    return res;
+  };
+};
+
 export default (fromStateProps_, fromActionProps, mapper) => {
   const isObject = typeof fromStateProps_ === 'object';
   const dependsOnProps =
@@ -33,23 +43,22 @@ export default (fromStateProps_, fromActionProps, mapper) => {
   const fromStateProps = !fromStateProps_
     ? () => emptyObj
     : isObject
-    ? (...args) => mapObj(fromStateProps_, fn => fn(...args))
+    ? memoizeObjectFn((...args) => mapObj(fromStateProps_, fn => fn(...args)))
     : fromStateProps_;
 
   return BaseComponent => {
-    const ImpBaseComponent = memo(BaseComponent);
+    const baseFn = BaseComponent.prototype
+      ? p => <BaseComponent {...p} /> // eslint-disable-line
+      : BaseComponent;
     let actionProps = fromActionProps ? null : emptyObj;
-    let prevState;
-    let prevStateProps;
-    let prevResult;
 
     return props => {
       const {state, dispatch} = useContext(context);
-
-      const stateProps =
-        dependsOnProps || prevState !== state
-          ? fromStateProps(state, props)
-          : prevStateProps;
+      const dependantProps = dependsOnProps ? props : emptyObj;
+      const stateProps = useMemo(() => fromStateProps(state, dependantProps), [
+        state,
+        dependantProps,
+      ]);
 
       if (!actionProps) {
         actionProps = mapObj(fromActionProps, fn => (...args) =>
@@ -57,19 +66,15 @@ export default (fromStateProps_, fromActionProps, mapper) => {
         );
       }
 
-      if (prevStateProps && shallowCompare(stateProps, prevStateProps)) {
-        return prevResult;
-      }
-
-      const finalProps = mapper
-        ? mapper(stateProps, actionProps, props)
-        : {...props, ...stateProps, ...actionProps};
-
-      prevResult = <ImpBaseComponent {...finalProps} />;
-      prevState = state;
-      prevStateProps = stateProps;
-
-      return prevResult;
+      return useMemo(
+        () =>
+          baseFn(
+            mapper
+              ? mapper(stateProps, actionProps, props)
+              : {...props, ...stateProps, ...actionProps}
+          ),
+        [stateProps] // eslint-disable-line
+      );
     };
   };
 };
