@@ -1,6 +1,6 @@
 import {compose, partialRight, prop} from 'ramda';
 import {matchPath} from 'react-router';
-import {createSelector} from 'reselect';
+import createSelector from 'redux-views';
 import rereducer, {getPayload} from 'rereducer';
 import {createBrowserHistory} from 'history';
 import {eventChannel} from 'redux-saga';
@@ -50,20 +50,20 @@ export default rereducer({location: {}, action: null}, [
 // SELECTORS
 const getRouter = prop('router');
 export const getLocation = createSelector(
-  getRouter,
+  [getRouter],
   prop('location')
 );
 export const getAction = createSelector(
-  getRouter,
+  [getRouter],
   prop('action')
 );
 export const getPathname = createSelector(
-  getLocation,
+  [getLocation],
   prop('pathname')
 );
 export const createMatchSelector = path =>
   createSelector(
-    getPathname,
+    [getPathname],
     partialRight(matchPath, [path])
   );
 

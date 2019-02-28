@@ -8,8 +8,7 @@ import {
 } from 'redux-saga/effects';
 import {items as itemsApi} from 'api';
 import {combineReducers} from 'redux';
-import {createSelector} from 'reselect';
-import createCachedSelector from 're-reselect';
+import createSelector from 'redux-views';
 import {
   always,
   compose,
@@ -103,53 +102,57 @@ export default combineReducers({
 // SELECTORS
 const itemsRootSelector = prop('items');
 export const idsListSelector = createSelector(
-  itemsRootSelector,
+  [itemsRootSelector],
   prop('idsList')
 );
 export const isListLoadingSelector = createSelector(
-  itemsRootSelector,
+  [itemsRootSelector],
   prop('isListLoading')
 );
 export const itemsDictSelector = createSelector(
-  itemsRootSelector,
+  [itemsRootSelector],
   prop('itemsDict')
 );
 export const loadingItemsSelector = createSelector(
-  itemsRootSelector,
+  [itemsRootSelector],
   prop('loadingItems')
 );
 
 const idMatchSelector = createMatchSelector('/list/:id');
 export const selectedIdSelector = createSelector(
-  idMatchSelector,
+  [idMatchSelector],
   match => match && parseInt(match.params.id, 10)
 );
 
 const propIdSelector = (state, {id}) => id;
 
-const isItemLoadingSelector = createCachedSelector(
+const isItemLoadingSelector = createSelector(
   [propIdSelector, loadingItemsSelector],
-  propOr(false)
-)(propIdSelector);
+  propOr(false),
+  propIdSelector
+);
 
-const isItemSelectedSelector = createCachedSelector(
+const isItemSelectedSelector = createSelector(
   [propIdSelector, selectedIdSelector],
-  equals
-)(propIdSelector);
+  equals,
+  propIdSelector
+);
 
-const rawItemSelector = createCachedSelector(
+const rawItemSelector = createSelector(
   [propIdSelector, itemsDictSelector],
-  propOr({})
-)(propIdSelector);
+  propOr({}),
+  propIdSelector
+);
 
-export const itemSelector = createCachedSelector(
+export const itemSelector = createSelector(
   [rawItemSelector, isItemLoadingSelector, isItemSelectedSelector],
   (item, isLoading, isSelected) => ({
     ...item,
     isLoading,
     isSelected,
-  })
-)(propIdSelector);
+  }),
+  propIdSelector
+);
 
 // SAGAS
 function* itemEntered(id) {
