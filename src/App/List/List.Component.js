@@ -11,14 +11,17 @@ const getListItem = id => (
   </Li>
 );
 
-const ItemsList = ({itemIds, onScroll}) => (
-  <Ul onScroll={onScroll}>
-    {itemIds.map(getListItem)}
-    <Li center>
-      <ListLoader size={30} color="grey" />
-    </Li>
-  </Ul>
-);
+const ItemsList = ({itemIds, onScroll}) => {
+  console.log('inside list render');
+  return (
+    <Ul onScroll={onScroll}>
+      {itemIds.map(getListItem)}
+      <Li center>
+        <ListLoader size={30} color="grey" />
+      </Li>
+    </Ul>
+  );
+};
 
 ItemsList.propTypes = {
   itemIds: PropTypes.arrayOf(PropTypes.number),

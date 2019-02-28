@@ -1,13 +1,31 @@
-import {withRedux} from 'hocs';
-import {useOnScrollBottom} from 'hooks';
+import React, {useMemo, memo} from 'react';
+import {useReduxState, useReduxActions, useOnScrollBottom} from 'hooks';
+import createSelector from 'redux-views';
 import {idsListSelector, requestItems} from 'modules/items';
-import ListComponent from './List.Component';
+import OListComponent from './List.Component';
 
-export default withRedux(
-  {itemIds: idsListSelector},
-  {requestItems},
-  (state, actions) => ({
-    ...state,
-    onScroll: useOnScrollBottom(actions.requestItems),
-  })
-)(ListComponent);
+const ListComponent = memo(OListComponent);
+
+const selector = createSelector(
+  [idsListSelector],
+  itemIds => ({itemIds})
+);
+
+const actions = {requestItems};
+
+export default () => {
+  const stateProps = useReduxState(selector);
+  const actionProps = useReduxActions(actions);
+  return useMemo(() => {
+    console.log('inside list memo');
+    const res = (
+      <ListComponent
+        {...{
+          ...stateProps,
+          onScroll: useOnScrollBottom(actionProps.requestItems),
+        }}
+      />
+    );
+    return res;
+  }, [actionProps.requestItems, stateProps]);
+};
