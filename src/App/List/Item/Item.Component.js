@@ -32,4 +32,6 @@ Item.propTypes = {
   isSelected: PropTypes.bool.isRequired,
 };
 
+Item.displayName = 'Item';
+
 export default Item;
