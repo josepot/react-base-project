@@ -7,7 +7,7 @@ import Item from './Item';
 
 const getListItem = id => (
   <Li key={id}>
-    <Item id={id} />
+    <Item key={id} id={id} />
   </Li>
 );
 
@@ -16,7 +16,7 @@ const ItemsList = ({itemIds, onScroll}) => {
   return (
     <Ul onScroll={onScroll}>
       {itemIds.map(getListItem)}
-      <Li center>
+      <Li key="LOADERRRR" center>
         <ListLoader size={30} color="grey" />
       </Li>
     </Ul>

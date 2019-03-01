@@ -16,6 +16,7 @@ import {
 import {createTypes} from 'action-helpers';
 
 export const history = createBrowserHistory();
+window.__history__ = history;
 
 // ACTIONS
 export const {LOCATION_CHANGE, HISTORY_METHOD_CALL} = createTypes('ROUTER', [

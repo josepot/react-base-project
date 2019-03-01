@@ -20,5 +20,6 @@ export default reducer => {
     ...enhancers
   )(createStore)(reducer);
   store.runSaga = sagaMiddleware.run;
+  window.__store__ = store;
   return store;
 };

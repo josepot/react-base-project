@@ -1,17 +1,19 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import {Loader} from 'components';
-import {NavLink as ONavLink} from 'react-router-dom';
-import {Link, Header} from './Item.Styles';
+import {Link as NavLink, Header} from './Item.Styles';
 
-const NavLink = Link.withComponent(ONavLink);
-
-const Item = ({id, title, author, price, isLoading, isSelected}) => {
+const Item = ({id, title, author, price, isLoading, isSelected, push}) => {
   console.log('Item rendered', id);
   return (
-    <article>
+    <article key={id}>
       <Header isSelected={isSelected}>
-        <NavLink to={`/list/${isSelected ? '' : id}`}>{title}</NavLink>
+        <NavLink
+          onClick={() =>
+              push(`/list/${isSelected ? '' : id}`)
+          }>
+          {title}
+        </NavLink>
       </Header>
       {isLoading ? (
         <Loader color="grey" size={20} />
