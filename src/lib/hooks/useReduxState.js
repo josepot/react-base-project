@@ -4,7 +4,8 @@ import {context} from 'ReduxProvider';
 const emptyObj = {};
 const alwaysEmptyArray = () => [];
 
-export default (selector, props = emptyObj) => {
+export default (selector, props_) => {
+  const props = props_ || emptyObj;
   const ref = useRef(selector.use ? selector.use() : alwaysEmptyArray);
   const {state} = useContext(context);
   const fns = useMemo(() => ref.current(state, props), [state, props]);

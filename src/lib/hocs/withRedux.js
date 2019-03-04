@@ -1,5 +1,5 @@
-import React, {useContext, useMemo} from 'react';
-import {context} from 'ReduxProvider';
+import React, {useMemo} from 'react';
+import {useRedux} from 'hooks';
 
 const emptyObj = {};
 const alwaysEmpty = () => emptyObj;
@@ -9,33 +9,21 @@ const defaultMapper = (stateProps, actionProps, externalProps) => ({
   ...actionProps,
 });
 
-export default (
-  fromStateProps_,
-  fromActionProps = emptyObj,
-  mapper = defaultMapper
-) => {
-  const dependsOnProps = fromStateProps_ && fromStateProps_.length !== 1;
-  const fromStateProps = !fromStateProps_ ? alwaysEmpty : fromStateProps_;
+export default (fromStateProps_, fromActionProps_, mapper = defaultMapper) => {
+  const fromStateProps = fromStateProps_ || alwaysEmpty;
+  const fromActionProps = fromActionProps_ || emptyObj;
+  const dependsOnProps =
+    fromStateProps === alwaysEmpty || fromStateProps.length !== 1;
 
   return BaseComponent => props => {
     const dependantProps = dependsOnProps ? props : emptyObj;
-
-    const {state, dispatch} = useContext(context);
-    const stateProps = useMemo(() => fromStateProps(state, dependantProps), [
-      state,
-      dependantProps,
-    ]);
-    const actionProps = useMemo(() => {
-      const res = {};
-      Object.entries(fromActionProps).forEach(([name, aCreator]) => {
-        res[name] = (...args) => dispatch(aCreator(...args));
-      });
-      return res;
-    }, [dispatch]);
-
-    return useMemo(
-      () => <BaseComponent {...mapper(stateProps, actionProps, props)} />,
-      [actionProps, props, stateProps]
+    const finalProps = useRedux(
+      fromStateProps,
+      fromActionProps,
+      mapper,
+      dependantProps
     );
+
+    return useMemo(() => <BaseComponent {...finalProps} />, [finalProps]);
   };
 };

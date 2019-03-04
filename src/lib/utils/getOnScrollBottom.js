@@ -1,6 +1,6 @@
 const DEBOUNCE_TIME = 100;
 
-export default function useOnScrollBottom(cb) {
+export default function getOnScrollBottom(cb) {
   let maxTop = Infinity;
   let timmerId;
 
