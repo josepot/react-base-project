@@ -8,7 +8,7 @@ import {
 } from 'redux-saga/effects';
 import {items as itemsApi} from 'api';
 import {combineReducers} from 'redux';
-import createSelector from 'redux-views';
+import {createSelector, createKeySelector} from 'redux-views';
 import {
   always,
   compose,
@@ -124,24 +124,21 @@ export const selectedIdSelector = createSelector(
   match => match && parseInt(match.params.id, 10)
 );
 
-const propIdSelector = (state, {id}) => id;
+const propIdSelector = createKeySelector((state, {id}) => id);
 
 const isItemLoadingSelector = createSelector(
   [propIdSelector, loadingItemsSelector],
-  propOr(false),
-  propIdSelector
+  propOr(false)
 );
 
 const isItemSelectedSelector = createSelector(
   [propIdSelector, selectedIdSelector],
-  equals,
-  propIdSelector
+  equals
 );
 
 const rawItemSelector = createSelector(
   [propIdSelector, itemsDictSelector],
-  propOr({}),
-  propIdSelector
+  propOr({})
 );
 
 export const itemSelector = createSelector(
@@ -150,8 +147,7 @@ export const itemSelector = createSelector(
     ...item,
     isLoading,
     isSelected,
-  }),
-  propIdSelector
+  })
 );
 
 // SAGAS
