@@ -19,6 +19,6 @@ function listMapper(stateProps, actionProps) {
 }
 
 export default () => {
-  const props = useRedux(selector, actions, listMapper, null);
+  const props = useRedux(selector, actions, listMapper);
   return useMemo(() => <ListComponent {...props} />, [props]);
 };
