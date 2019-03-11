@@ -6452,10 +6452,10 @@ redux-saga@^1.0.2:
   dependencies:
     "@redux-saga/core" "^1.0.2"
 
-redux-views@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/redux-views/-/redux-views-0.2.0.tgz#7319ea55ebdb00a8e18eaa45002b772a59d0fff1"
-  integrity sha512-Rbjle6pMpENlcOTALcwVIYRZ9LdOAetei6CAl5ifmRVN3FkMbliaoyXqnkBEKVPHpOdkwegHkBulA4JZu0uZGw==
+redux-views@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/redux-views/-/redux-views-0.3.0.tgz#b834116865b5d9b86999352418ef3f3154757b7c"
+  integrity sha512-C38p+1PsPk3ABUSAKMU8Agz9Md0OPK1CNNmvmTmJk3kU7RIpIivfh1oFBX9/lCYe7C3/bJnqNZJQ4zb8RTX17w==
   dependencies:
     loose-envify "^1.1.0"
 
