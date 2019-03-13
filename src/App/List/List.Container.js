@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {useRedux} from 'hooks';
+import {useRedux} from 'react-redux-lean';
 import {getOnScrollBottom} from 'utils';
 import {createStructuredSelector} from 'redux-views';
 import {idsListSelector, requestItems} from 'modules/items';

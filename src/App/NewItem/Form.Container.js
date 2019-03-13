@@ -1,5 +1,7 @@
 import {always, both, complement, compose, lt} from 'ramda';
-import {withForm, withRedux} from 'hocs';
+import {connect} from 'react-redux-lean';
+
+import {withForm} from 'hocs';
 
 import {onSubmit, onItemSubmitted} from 'modules/items';
 import {createValidations} from 'utils';
@@ -12,7 +14,11 @@ const isValidPrice = compose(
 );
 
 export default compose(
-  withRedux(null, {onSubmit}),
+  connect(
+    null,
+    {onSubmit},
+    (state, actions) => actions
+  ),
   withForm({
     mapPropsToValues: always({
       title: '',

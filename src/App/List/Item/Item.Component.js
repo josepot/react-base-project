@@ -34,4 +34,7 @@ Item.propTypes = {
 
 Item.displayName = 'Item';
 
-export default Item;
+export default x => {
+  console.log('Item', x.id);
+  return Item(x);
+};

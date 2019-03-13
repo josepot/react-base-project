@@ -4,23 +4,23 @@ import {hot} from 'react-hot-loader/root';
 import {setConfig} from 'react-hot-loader';
 import {Router} from 'react-router';
 import {ThemeProvider} from 'emotion-theming';
-import ReduxProvider from 'ReduxProvider';
+import {Provider} from 'react-redux-lean';
 
 import theme from 'lib/theme';
 
 function Providers({children, store, history}) {
   return (
-    <ReduxProvider store={store}>
+    <Provider store={store}>
       <Router history={history}>
         <ThemeProvider theme={theme}>{children}</ThemeProvider>
       </Router>
-    </ReduxProvider>
+    </Provider>
   );
 }
 
 Providers.propTypes = {
   children: PropTypes.node.isRequired,
-  store: ReduxProvider.propTypes.store,
+  store: Provider.propTypes.store,
   history: PropTypes.object.isRequired,
 };
 
