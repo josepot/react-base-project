@@ -17,8 +17,11 @@ function Providers({children, store, history}) {
   const onRender = (x, y, t) => {
     total += t;
     if (count < 100) {
-      setTimeout(() => store.dispatch(actions[count++]), 0);
-    } else {
+      setTimeout(() => {
+        store.dispatch(actions[count]);
+        count += 1;
+      }, 0);
+    } else if (count === 101) {
       window.alert(total);
     }
   };

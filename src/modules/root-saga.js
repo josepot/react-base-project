@@ -12,5 +12,9 @@ function* saveActions() {
 
 export default function*() {
   // yield fork(saveActions);
-  yield all([/*items, router*/].map(fork));
+  yield all(
+    [
+      /*items, router*/
+    ].map(fork)
+  );
 }
