@@ -1,6 +1,6 @@
 import {not} from 'ramda';
-import {connect} from 'react-redux-lean';
-import {createStructuredSelector, createSelector} from 'redux-views';
+import {connect} from 'react-redux';
+import {createStructuredSelector, createSelector} from 'reselect';
 import {isListLoadingSelector as isLoading} from 'modules/items';
 import {Loader} from 'components';
 
@@ -10,5 +10,6 @@ export default connect(
       [isLoading],
       not
     ),
-  })
+  }),
+  null
 )(Loader);

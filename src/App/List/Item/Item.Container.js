@@ -1,9 +1,8 @@
-import React, {useMemo} from 'react';
 import {itemSelector} from 'modules/items';
-import {useReduxState} from 'react-redux-lean';
+import {connect} from 'react-redux';
 import Item from './Item.Component';
 
-export default props => {
-  const stateProps = useReduxState(itemSelector, props);
-  return useMemo(() => <Item {...stateProps} />, [stateProps]);
-};
+export default connect(
+  itemSelector,
+  null
+)(Item);

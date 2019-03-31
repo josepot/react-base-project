@@ -8,7 +8,8 @@ import {
 } from 'redux-saga/effects';
 import {items as itemsApi} from 'api';
 import {combineReducers} from 'redux';
-import {createSelector, createKeySelector} from 'redux-views';
+import {createSelector} from 'reselect';
+import createCachedSelector from 're-reselect';
 import {
   always,
   compose,
@@ -124,31 +125,31 @@ export const selectedIdSelector = createSelector(
   match => match && match.params.id
 );
 
-const propIdSelector = createKeySelector(({id}) => id);
+const propIdSelector = (s, {id}) => id;
 
-const isItemLoadingSelector = createSelector(
+const isItemLoadingSelector = createCachedSelector(
   [propIdSelector, loadingItemsSelector],
   propOr(false)
-);
+)(propIdSelector);
 
-const isItemSelectedSelector = createSelector(
+const isItemSelectedSelector = createCachedSelector(
   [propIdSelector, selectedIdSelector],
   equals
-);
+)(propIdSelector);
 
-const rawItemSelector = createSelector(
+const rawItemSelector = createCachedSelector(
   [propIdSelector, itemsDictSelector],
   propOr({})
-);
+)(propIdSelector);
 
-export const itemSelector = createSelector(
+export const itemSelector = createCachedSelector(
   [rawItemSelector, isItemLoadingSelector, isItemSelectedSelector],
   (item, isLoading, isSelected) => ({
     ...item,
     isLoading,
     isSelected,
   })
-);
+)(propIdSelector);
 
 // SAGAS
 function* itemEntered(id) {

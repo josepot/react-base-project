@@ -4,16 +4,22 @@ import {hot} from 'react-hot-loader/root';
 import {setConfig} from 'react-hot-loader';
 import {Router} from 'react-router';
 import {ThemeProvider} from 'emotion-theming';
-import {Provider} from 'react-redux-lean';
+import {Provider} from 'react-redux';
 
 import theme from 'lib/theme';
+
+const Profiler = React.unstable_Profiler;
+
+const onRender = (...args) => console.log(...args);
 
 function Providers({children, store, history}) {
   return (
     <Provider store={store}>
-      <Router history={history}>
-        <ThemeProvider theme={theme}>{children}</ThemeProvider>
-      </Router>
+      <Profiler id="root" onRender={onRender}>
+        <Router history={history}>
+          <ThemeProvider theme={theme}>{children}</ThemeProvider>
+        </Router>
+      </Profiler>
     </Provider>
   );
 }

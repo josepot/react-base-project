@@ -1,7 +1,6 @@
-import React, {useMemo} from 'react';
-import {useRedux} from 'react-redux-lean';
+import {connect} from 'react-redux';
 import {getOnScrollBottom} from 'utils';
-import {createStructuredSelector} from 'redux-views';
+import {createStructuredSelector} from 'reselect';
 import {idsListSelector, requestItems} from 'modules/items';
 import ListComponent from './List.Component';
 
@@ -18,7 +17,8 @@ function listMapper(stateProps, actionProps) {
   };
 }
 
-export default () => {
-  const props = useRedux(selector, actions, listMapper);
-  return useMemo(() => <ListComponent {...props} />, [props]);
-};
+export default connect(
+  selector,
+  actions,
+  listMapper
+)(ListComponent);

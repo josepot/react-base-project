@@ -1,6 +1,6 @@
 import {compose, partialRight, prop} from 'ramda';
 import {matchPath} from 'react-router';
-import {createSelector} from 'redux-views';
+import {createSelector} from 'reselect';
 import rereducer, {getPayload} from 'rereducer';
 import {createBrowserHistory} from 'history';
 import {eventChannel} from 'redux-saga';
