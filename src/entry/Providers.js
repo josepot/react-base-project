@@ -5,14 +5,23 @@ import {setConfig} from 'react-hot-loader';
 import {Router} from 'react-router';
 import {ThemeProvider} from 'emotion-theming';
 import {Provider} from 'react-redux';
-
 import theme from 'lib/theme';
+import actions from './actions.json';
 
 const Profiler = React.unstable_Profiler;
 
-const onRender = (...args) => console.log(...args);
+let count = 0;
+let total = 0;
 
 function Providers({children, store, history}) {
+  const onRender = (x, y, t) => {
+    total += t;
+    if (count < 100) {
+      setTimeout(() => store.dispatch(actions[count++]), 0);
+    } else {
+      window.alert(total);
+    }
+  };
   return (
     <Provider store={store}>
       <Profiler id="root" onRender={onRender}>
