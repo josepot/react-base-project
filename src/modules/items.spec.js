@@ -18,10 +18,10 @@ describe('modules/items', () => {
       });
 
       test('ITEMS_RECEIVED: it concats new ids in the correct order', () => {
-        const intialState = [2, 3, 4];
-        const action = itemsReceived([{id: 7}, {id: 1}, {id: 5}]);
+        const intialState = ['2', '3', '4'];
+        const action = itemsReceived([{id: '7'}, {id: '1'}, {id: '5'}]);
         const result = reducer(intialState, action);
-        expect(result).toEqual([2, 3, 4, 7, 1, 5]);
+        expect(result).toEqual(['2', '3', '4', '7', '1', '5']);
       });
     });
 
@@ -48,10 +48,10 @@ describe('modules/items', () => {
     describe('itemsDict', () => {
       const reducer = items.__get__('itemsDict');
       const newItems = [
-        {id: 1, title: 'title1'},
-        {id: 2, title: 'title2'},
-        {id: 3, title: 'title3'},
-        {id: 4, title: 'title4'},
+        {id: '1', title: 'title1'},
+        {id: '2', title: 'title2'},
+        {id: '3', title: 'title3'},
+        {id: '4', title: 'title4'},
       ];
 
       test('default value is an empty object', () => {
@@ -73,8 +73,8 @@ describe('modules/items', () => {
       test('ITEMS_RECEIVED: it respects the existing items', () => {
         const action = itemsReceived(newItems);
         const initialState = {
-          2: {id: 2, title: 'title2', author: 'author2', price: 10},
-          4: {id: 4, title: 'title4', author: 'author4', price: 10},
+          2: {id: '2', title: 'title2', author: 'author2', price: 10},
+          4: {id: '4', title: 'title4', author: 'author4', price: 10},
         };
         const result = reducer(initialState, action);
         const expectedResult = {
@@ -89,7 +89,7 @@ describe('modules/items', () => {
       test('ITEM_RECEIVED: it updates the existing item if exists', () => {
         const initialState = reducer({}, itemsReceived(newItems));
         const completeItem = {
-          id: 2,
+          id: '2',
           title: 'title2',
           author: 'author2',
           price: 10,
@@ -115,17 +115,17 @@ describe('modules/items', () => {
 
       test('it tracks the items that are being loaded', () => {
         let state = {};
-        state = reducer(state, requestItem(1));
+        state = reducer(state, requestItem('1'));
         expect(state).toEqual({1: true});
-        state = reducer(state, requestItem(5));
+        state = reducer(state, requestItem('5'));
         expect(state).toEqual({1: true, 5: true});
       });
 
       test('it untracks them once they are loaded', () => {
         let state = {1: true, 5: true};
-        state = reducer(state, itemReceived({id: 5}));
+        state = reducer(state, itemReceived({id: '5'}));
         expect(state).toEqual({1: true});
-        state = reducer(state, itemReceived({id: 1}));
+        state = reducer(state, itemReceived({id: '1'}));
         expect(state).toEqual({});
       });
     });
@@ -134,13 +134,13 @@ describe('modules/items', () => {
   describe('selectors', () => {
     const state = {
       items: {
-        idsList: [1, 2, 3, 4],
+        idsList: ['1', '2', '3', '4'],
         isListLoading: true,
         itemsDict: {
-          1: {id: 1, title: 'title1'},
-          2: {id: 2, title: 'title2', author: 'author2', price: 10},
-          3: {id: 3, title: 'title3'},
-          4: {id: 4, title: 'title4'},
+          1: {id: '1', title: 'title1'},
+          2: {id: '2', title: 'title2', author: 'author2', price: 10},
+          3: {id: '3', title: 'title3'},
+          4: {id: '4', title: 'title4'},
         },
         loadingItems: {
           1: true,
@@ -160,7 +160,7 @@ describe('modules/items', () => {
 
     describe('selectedIdSelector', () => {
       it('returns the selected id', () => {
-        expect(selectedIdSelector(state)).toBe(4);
+        expect(selectedIdSelector(state)).toBe('4');
 
         const rootPathState = assocPath(
           ['router', 'location', 'pathname'],
@@ -173,17 +173,17 @@ describe('modules/items', () => {
 
     describe('itemSelector', () => {
       it('returns the computed item data and memoizes it', () => {
-        const item4Data = itemSelector(state, {id: 4});
+        const item4Data = itemSelector(state, {id: '4'});
         expect(item4Data).toEqual({
-          id: 4,
+          id: '4',
           title: 'title4',
           isLoading: true,
           isSelected: true,
         });
 
-        const item2Data = itemSelector(state, {id: 2});
+        const item2Data = itemSelector(state, {id: '2'});
         expect(item2Data).toEqual({
-          id: 2,
+          id: '2',
           title: 'title2',
           author: 'author2',
           price: 10,
@@ -191,7 +191,7 @@ describe('modules/items', () => {
           isSelected: false,
         });
 
-        const item4DataAgain = itemSelector(state, {id: 4});
+        const item4DataAgain = itemSelector(state, {id: '4'});
         expect(item4DataAgain).toBe(item4Data);
 
         const newState = assoc(
@@ -199,7 +199,7 @@ describe('modules/items', () => {
           items(
             state.items,
             itemReceived({
-              id: 4,
+              id: '4',
               title: 'title4',
               author: 'author4',
               price: 20,
@@ -208,9 +208,9 @@ describe('modules/items', () => {
           state
         );
 
-        const newItem4 = itemSelector(newState, {id: 4});
+        const newItem4 = itemSelector(newState, {id: '4'});
         expect(newItem4).toEqual({
-          id: 4,
+          id: '4',
           title: 'title4',
           author: 'author4',
           price: 20,
@@ -218,7 +218,7 @@ describe('modules/items', () => {
           isSelected: true,
         });
 
-        const item2DataAgain = itemSelector(newState, {id: 2});
+        const item2DataAgain = itemSelector(newState, {id: '2'});
         expect(item2DataAgain).toBe(item2Data);
       });
     });
