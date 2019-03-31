@@ -8,12 +8,18 @@ import {Provider} from 'react-redux-lean';
 
 import theme from 'lib/theme';
 
+const Profiler = React.unstable_Profiler;
+
+const onRender = (...args) => console.log(...args);
+
 function Providers({children, store, history}) {
   return (
     <Provider store={store}>
-      <Router history={history}>
-        <ThemeProvider theme={theme}>{children}</ThemeProvider>
-      </Router>
+      <Profiler id="root" onRender={onRender}>
+        <Router history={history}>
+          <ThemeProvider theme={theme}>{children}</ThemeProvider>
+        </Router>
+      </Profiler>
     </Provider>
   );
 }
