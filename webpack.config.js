@@ -46,6 +46,14 @@ module.exports = {
   entry: {
     index: './src/entry/index.js',
   },
+  resolve: isDev
+    ? {}
+    : {
+        alias: {
+          'react-dom$': 'react-dom/profiling',
+          'scheduler/tracing': 'scheduler/tracing-profiling',
+        },
+      },
   module: {
     rules: [
       {
