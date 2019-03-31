@@ -121,10 +121,10 @@ export const loadingItemsSelector = createSelector(
 const idMatchSelector = createMatchSelector('/list/:id');
 export const selectedIdSelector = createSelector(
   [idMatchSelector],
-  match => match && parseInt(match.params.id, 10)
+  match => match && match.params.id
 );
 
-const propIdSelector = createKeySelector((state, {id}) => id);
+const propIdSelector = createKeySelector(({id}) => id);
 
 const isItemLoadingSelector = createSelector(
   [propIdSelector, loadingItemsSelector],
@@ -163,7 +163,7 @@ function* itemEnteredWatcher() {
     const {
       params: {id},
     } = yield takeLocation('/list/:id');
-    yield fork(itemEntered, parseInt(id, 10));
+    yield fork(itemEntered, id);
   }
 }
 

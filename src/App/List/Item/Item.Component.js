@@ -24,7 +24,7 @@ const Item = ({id, title, author, price, isLoading, isSelected}) => (
 );
 
 Item.propTypes = {
-  id: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   author: PropTypes.string,
   price: PropTypes.number,
@@ -33,8 +33,11 @@ Item.propTypes = {
 };
 
 Item.displayName = 'Item';
+export default Item;
 
+/*
 export default x => {
   console.log('Item', x.id);
   return Item(x);
 };
+*/

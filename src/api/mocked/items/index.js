@@ -1,6 +1,8 @@
 import {compose, inc, map, pick, prop, propEq, reduce} from 'ramda';
-import data from './data.json';
+import dataRaw from './data.json';
 import {delayedResponse} from '../utils';
+
+const data = dataRaw.map(({id, ...rest}) => ({id: id.toString(), ...rest}));
 
 let nextId = compose(
   inc,

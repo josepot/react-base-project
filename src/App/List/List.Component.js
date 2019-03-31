@@ -21,7 +21,7 @@ const ItemsList = ({itemIds, onScroll}) => (
 );
 
 ItemsList.propTypes = {
-  itemIds: PropTypes.arrayOf(PropTypes.number),
+  itemIds: PropTypes.arrayOf(PropTypes.string),
   onScroll: PropTypes.func,
 };
 
