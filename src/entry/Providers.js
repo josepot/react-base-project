@@ -4,7 +4,7 @@ import {hot} from 'react-hot-loader/root';
 import {setConfig} from 'react-hot-loader';
 import {Router} from 'react-router';
 import {ThemeProvider} from 'emotion-theming';
-import {Provider} from 'react-redux-lean';
+import {Provider} from 'react-redux';
 
 import theme from 'lib/theme';
 import actions from './actions.json';

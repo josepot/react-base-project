@@ -1,5 +1,5 @@
 import {always, both, complement, compose, lt} from 'ramda';
-import {connect} from 'react-redux-lean';
+import {connect} from 'react-redux';
 
 import {withForm} from 'hocs';
 
